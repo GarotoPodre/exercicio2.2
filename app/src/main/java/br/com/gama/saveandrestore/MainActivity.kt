@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, getString(R.string.add_text_validation), Toast.LENGTH_LONG).show()
             }else{
                 val fullName=firstName.plus(" ").plus(lastName)
+                discountCodeConfirmation.text=getString(R.string.discount_code_confirmation,fullName)
                 //gerando o código de desconto
                 discountCode.text= UUID.randomUUID().toString().take(8).uppercase()
 
@@ -52,7 +53,29 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate")
     }
 
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.d(TAG, "onRestoreInstanceState")
+
+        //(2) na restauração, recupero os valores das constantes previamentes savas em (1)
+        //Pega o código de desconto ou uma string vazia se ela não foi definida
+        discountCode.text= savedInstanceState.getString(DISCOUNT_CODE,"")
+        //Pega a mensagem de confirmação ou uma string vazia se esta não foi definida
+        discountCodeConfirmation.text=savedInstanceState.getString(DISCOUNT_CONFIRMATION_MESSAGE,"")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.d(TAG, "onSaveInstanceState")
+        //Quando salvar o estado da instância, coloco esses valores nas constantes (1)
+        outState.putString(DISCOUNT_CODE, discountCode.text.toString())
+        outState.putString(DISCOUNT_CONFIRMATION_MESSAGE, discountCodeConfirmation.text.toString())
+    }
+
     companion object {
         private const val TAG = "MainActivity"
+        private const val DISCOUNT_CONFIRMATION_MESSAGE="DISCOUNT_CONFIRMATION_MESSAGE"
+        private const val DISCOUNT_CODE="DISCOUNT_CODE"
+
     }
 }
